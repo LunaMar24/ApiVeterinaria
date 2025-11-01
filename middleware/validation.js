@@ -360,6 +360,82 @@ const validatePropietarioId = [
         .withMessage('El ID debe ser un número entero positivo')
 ];
 
+/**
+ * Validaciones para datos de mascota
+ * Campos: Propietario, Nombre, Raza, Edad
+ */
+const validateMascota = [
+    body('propietario')
+        .notEmpty()
+        .withMessage('El propietario es requerido')
+        .isInt({ min: 1 })
+        .withMessage('El propietario debe ser un ID numérico válido'),
+
+    body('nombre')
+        .trim()
+        .notEmpty()
+        .withMessage('El nombre de la mascota es requerido')
+        .isLength({ min: 1, max: 100 })
+        .withMessage('El nombre debe tener entre 1 y 100 caracteres'),
+
+    body('raza')
+        .trim()
+        .optional()
+        .isLength({ max: 50 })
+        .withMessage('La raza no puede exceder 50 caracteres'),
+
+    body('edad')
+        .trim()
+        .optional()
+        .isLength({ max: 20 })
+        .withMessage('La edad no puede exceder 20 caracteres')
+];
+
+/**
+ * Validación para el parámetro ID de mascota
+ */
+const validateMascotaId = [
+    param('id')
+        .isInt({ min: 1 })
+        .withMessage('El ID debe ser un número entero positivo')
+];
+
+/**
+ * Validaciones para datos de historial médico
+ * Campos: Mascota, FechaAtencion, Motivo, Diagnostico
+ */
+const validateHistorial = [
+    body('mascota')
+        .notEmpty()
+        .withMessage('La mascota es requerida')
+        .isInt({ min: 1 })
+        .withMessage('La mascota debe ser un ID numérico válido'),
+
+    body('fechaAtencion')
+        .optional()
+        .isISO8601()
+        .withMessage('La fecha debe ser un datetime ISO 8601'),
+
+    body('motivo')
+        .trim()
+        .notEmpty()
+        .withMessage('El motivo es requerido')
+        .isLength({ min: 1, max: 500 })
+        .withMessage('El motivo debe tener entre 1 y 500 caracteres'),
+
+    body('diagnostico')
+        .trim()
+        .optional()
+        .isLength({ max: 2000 })
+        .withMessage('El diagnóstico no puede exceder 2000 caracteres')
+];
+
+const validateHistorialId = [
+    param('id')
+        .isInt({ min: 1 })
+        .withMessage('El ID debe ser un número entero positivo')
+];
+
 module.exports = {
     validateUser,
     validateRegister,
@@ -374,5 +450,9 @@ module.exports = {
     handleValidationErrors,
     validateContentType,
     validatePropietario,
-    validatePropietarioId
+    validatePropietarioId,
+    validateMascota,
+    validateMascotaId,
+    validateHistorial,
+    validateHistorialId
 };

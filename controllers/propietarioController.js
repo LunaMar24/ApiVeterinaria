@@ -9,9 +9,17 @@ const { validationResult } = require('express-validator');
 class PropietarioController {
     static async getAllPropietarios(req, res) {
         try {
-            const page = parseInt(req.query.page) || 1;
-            const limit = parseInt(req.query.limit) || 10;
-            const search = req.query.search;
+            // Soportar page/limit en query string o en body; valores por defecto: page=1, limit=10
+            const rawPage = req.query?.page ?? req.body?.page;
+            const rawLimit = req.query?.limit ?? req.body?.limit;
+
+            let page = 0;
+            let limit = 0;
+            
+            if (isNaN(rawPage) || page < 1) page = 1;
+            if (isNaN(rawPage) || limit < 1) limit = 10;
+            if (limit > 100) limit = 100;
+            const search = req.query?.search ?? req.body?.search;
 
             let result;
 

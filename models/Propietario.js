@@ -41,7 +41,7 @@ class Propietario {
     static async findAll() {
         try {
             const [rows] = await pool.execute(
-                'SELECT idPropietario as id, Nombre as nombre, Apellidos as apellidos, Cedula as cedula, Telefono as telefono, Correo as correo FROM propietarios ORDER BY Nombre'
+                'SELECT idPropietario as id, Nombre as nombre, Apellidos as apellidos, Cedula as cedula, Telefono as telefono, Correo as correo FROM propietario ORDER BY Nombre'
             );
             return rows;
         } catch (error) {
@@ -58,7 +58,7 @@ class Propietario {
     static async findById(id) {
         try {
             const [rows] = await pool.execute(
-                'SELECT idPropietario as id, Nombre as nombre, Apellidos as apellidos, Cedula as cedula, Telefono as telefono, Correo as correo FROM propietarios WHERE idPropietario = ?',
+                'SELECT idPropietario as id, Nombre as nombre, Apellidos as apellidos, Cedula as cedula, Telefono as telefono, Correo as correo FROM propietario WHERE idPropietario = ?',
                 [id]
             );
             return rows.length > 0 ? rows[0] : null;
@@ -82,7 +82,7 @@ class Propietario {
         try {
             const { nombre, apellidos, cedula, telefono, correo } = propData;
             const [result] = await pool.execute(
-                'INSERT INTO propietarios (Nombre, Apellidos, Cedula, Telefono, Correo) VALUES (?, ?, ?, ?, ?)',
+                'INSERT INTO propietario (Nombre, Apellidos, Cedula, Telefono, Correo) VALUES (?, ?, ?, ?, ?)',
                 [nombre, apellidos, cedula, telefono, correo]
             );
 
@@ -107,7 +107,7 @@ class Propietario {
         try {
             const { nombre, apellidos, cedula, telefono, correo } = propData;
 
-            let query = 'UPDATE propietarios SET Nombre = ?, Apellidos = ?, Cedula = ?, Telefono = ?, Correo = ? WHERE idPropietario = ?';
+            let query = 'UPDATE propietario SET Nombre = ?, Apellidos = ?, Cedula = ?, Telefono = ?, Correo = ? WHERE idPropietario = ?';
             const params = [nombre, apellidos, cedula, telefono, correo, id];
 
             const [result] = await pool.execute(query, params);
@@ -135,7 +135,7 @@ class Propietario {
     static async delete(id) {
         try {
             const [result] = await pool.execute(
-                'DELETE FROM propietarios WHERE idPropietario = ?',
+                'DELETE FROM propietario WHERE idPropietario = ?',
                 [id]
             );
             return result.affectedRows > 0;
@@ -153,7 +153,7 @@ class Propietario {
     static async searchByName(nombre) {
         try {
             const [rows] = await pool.execute(
-                'SELECT idPropietario as id, Nombre as nombre, Apellidos as apellidos, Cedula as cedula, Telefono as telefono, Correo as correo FROM propietarios WHERE Nombre LIKE ? OR Apellidos LIKE ? ORDER BY Nombre',
+                'SELECT idPropietario as id, Nombre as nombre, Apellidos as apellidos, Cedula as cedula, Telefono as telefono, Correo as correo FROM propietario WHERE Nombre LIKE ? OR Apellidos LIKE ? ORDER BY Nombre',
                 [`%${nombre}%`, `%${nombre}%`]
             );
             return rows;
@@ -169,7 +169,7 @@ class Propietario {
      */
     static async count() {
         try {
-            const [rows] = await pool.execute('SELECT COUNT(*) as total FROM propietarios');
+            const [rows] = await pool.execute('SELECT COUNT(*) as total FROM propietario');
             return rows[0].total;
         } catch (error) {
             console.error('Error en Propietario.count:', error);
@@ -194,7 +194,7 @@ class Propietario {
             if (limitInt > 100) limitInt = 100;
 
             const [props] = await pool.execute(
-                `SELECT idPropietario as id, Nombre as nombre, Apellidos as apellidos, Cedula as cedula, Telefono as telefono, Correo as correo FROM propietarios ORDER BY Nombre LIMIT ${limitInt} OFFSET ${offset}`
+                `SELECT idPropietario as id, Nombre as nombre, Apellidos as apellidos, Cedula as cedula, Telefono as telefono, Correo as correo FROM propietario ORDER BY Nombre LIMIT ${limitInt} OFFSET ${offset}`
             );
 
             const total = await this.count();

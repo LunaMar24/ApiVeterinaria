@@ -17,6 +17,8 @@ const { validateJSON, sanitizeInput, validateContentType } = require('./middlewa
 const userRoutes = require('./routes/userRoutes');
 const authRoutes = require('./routes/authRoutes');
 const propietarioRoutes = require('./routes/propietarioRoutes');
+const mascotaRoutes = require('./routes/mascotaRoutes');
+const historialRoutes = require('./routes/historialRoutes');
 
 // Crear aplicación Express
 const app = express();
@@ -106,6 +108,8 @@ app.get('/health', async (req, res) => {
 app.use(`${API_PREFIX}/users`, userRoutes);
 app.use(`${API_PREFIX}/auth`, authRoutes);
 app.use(`${API_PREFIX}/propietarios`, propietarioRoutes);
+app.use(`${API_PREFIX}/mascotas`, mascotaRoutes);
+app.use(`${API_PREFIX}/historiales`, historialRoutes);
 
 // Ruta para documentación básica
 app.get('/docs', (req, res) => {
@@ -136,7 +140,25 @@ app.get('/docs', (req, res) => {
             'GET /propietarios/:id': 'Obtener propietario por ID',
             'POST /propietarios': 'Crear nuevo propietario',
             'PUT /propietarios/:id': 'Actualizar propietario',
-            'DELETE /propietarios/:id': 'Eliminar propietario'
+            'DELETE /propietarios/:id': 'Eliminar propietario',
+
+            // Mascotas
+            'GET /mascotas': 'Obtener todas las mascotas (con paginación)',
+            'GET /mascotas/search?q=nombre': 'Buscar mascotas por nombre o raza',
+            'GET /mascotas/stats': 'Obtener estadísticas de mascotas',
+            'GET /mascotas/:id': 'Obtener mascota por ID',
+            'POST /mascotas': 'Crear nueva mascota',
+            'PUT /mascotas/:id': 'Actualizar mascota',
+            'DELETE /mascotas/:id': 'Eliminar mascota'
+            ,
+            // Historial Médico
+            'GET /historiales': 'Obtener todos los historiales (con paginación)',
+            'GET /historiales/search?q=term': 'Buscar historiales por motivo o diagnóstico',
+            'GET /historiales/stats': 'Obtener estadísticas de historiales',
+            'GET /historiales/:id': 'Obtener historial por ID',
+            'POST /historiales': 'Crear nuevo historial',
+            'PUT /historiales/:id': 'Actualizar historial',
+            'DELETE /historiales/:id': 'Eliminar historial'
         },
         examples: {
             register: {
@@ -168,7 +190,8 @@ app.use((req, res) => {
             docs: '/docs',
             auth: `${API_PREFIX}/auth`,
             users: `${API_PREFIX}/users`,
-            propietarios: `${API_PREFIX}/propietarios`
+            propietarios: `${API_PREFIX}/propietarios`,
+            mascotas: `${API_PREFIX}/mascotas`
         }
     });
 });

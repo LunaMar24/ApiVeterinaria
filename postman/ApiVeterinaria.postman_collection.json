@@ -1,7 +1,7 @@
 {
   "info": {
-    "_postman_id": "api-veterinaria-propietarios",
-    "name": "Api Veterinaria - Propietarios",
+    "_postman_id": "api-veterinaria",
+    "name": "Api Veterinaria",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
@@ -12,89 +12,201 @@
   ],
   "item": [
     {
-      "name": "Listar propietarios (paginated)",
-      "request": {
-        "method": "GET",
-        "header": [],
-        "url": {
-          "raw": "{{baseUrl}}/propietarios",
-          "host": [
-            "{{baseUrl}}"
-          ],
-          "path": [
-            "propietarios"
-          ]
-        }
-      }
-    },
-    {
-      "name": "Buscar propietarios (q)",
-      "request": {
-        "method": "GET",
-        "header": [],
-        "url": {
-          "raw": "{{baseUrl}}/propietarios/search?q=Juan",
-          "host": ["{{baseUrl}}"],
-          "path": ["propietarios","search"],
-          "query": [
-            { "key": "q", "value": "Juan" }
-          ]
-        }
-      }
-    },
-    {
-      "name": "Get propietario by id",
-      "request": {
-        "method": "GET",
-        "header": [],
-        "url": {
-          "raw": "{{baseUrl}}/propietarios/1",
-          "host": ["{{baseUrl}}"],
-          "path": ["propietarios","1"]
-        }
-      }
-    },
-    {
-      "name": "Crear propietario",
-      "request": {
-        "method": "POST",
-        "header": [
-          { "key": "Content-Type", "value": "application/json" }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"nombre\": \"Carlos\",\n  \"apellidos\": \"Gomez\",\n  \"cedula\": \"12345678\",\n  \"telefono\": \"+541112345678\",\n  \"correo\": \"carlos@example.com\"\n}"
+      "name": "Propietarios",
+      "item": [
+        {
+          "name": "Listar propietarios (paginated)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/propietarios",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "propietarios"
+              ]
+            }
+          }
         },
-        "url": { "raw": "{{baseUrl}}/propietarios", "host": ["{{baseUrl}}"], "path": ["propietarios"] }
-      }
-    },
-    {
-      "name": "Actualizar propietario",
-      "request": {
-        "method": "PUT",
-        "header": [ { "key": "Content-Type", "value": "application/json" } ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"nombre\": \"Carlos Alberto\",\n  \"apellidos\": \"Gomez\",\n  \"cedula\": \"12345678\",\n  \"telefono\": \"+541112345678\",\n  \"correo\": \"carlos@example.com\"\n}"
+        {
+          "name": "Buscar propietarios (q)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/propietarios/search?q=Juan",
+              "host": ["{{baseUrl}}"],
+              "path": ["propietarios","search"],
+              "query": [
+                { "key": "q", "value": "Juan" }
+              ]
+            }
+          }
         },
-        "url": { "raw": "{{baseUrl}}/propietarios/1", "host": ["{{baseUrl}}"], "path": ["propietarios","1"] }
-      }
+        {
+          "name": "Get propietario by id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/propietarios/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["propietarios","1"]
+            }
+          }
+        },
+        {
+          "name": "Crear propietario",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Carlos\",\n  \"apellidos\": \"Gomez\",\n  \"cedula\": \"12345678\",\n  \"telefono\": \"+541112345678\",\n  \"correo\": \"carlos@example.com\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/propietarios", "host": ["{{baseUrl}}"], "path": ["propietarios"] }
+          }
+        },
+        {
+          "name": "Actualizar propietario",
+          "request": {
+            "method": "PUT",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Carlos Alberto\",\n  \"apellidos\": \"Gomez\",\n  \"cedula\": \"12345678\",\n  \"telefono\": \"+541112345678\",\n  \"correo\": \"carlos@example.com\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/propietarios/1", "host": ["{{baseUrl}}"], "path": ["propietarios","1"] }
+          }
+        },
+        {
+          "name": "Eliminar propietario",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/propietarios/1", "host": ["{{baseUrl}}"], "path": ["propietarios","1"] }
+          }
+        },
+        {
+          "name": "Estadísticas propietarios",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/propietarios/stats", "host": ["{{baseUrl}}"], "path": ["propietarios","stats"] }
+          }
+        }
+      ]
     },
     {
-      "name": "Eliminar propietario",
-      "request": {
-        "method": "DELETE",
-        "header": [],
-        "url": { "raw": "{{baseUrl}}/propietarios/1", "host": ["{{baseUrl}}"], "path": ["propietarios","1"] }
-      }
-    },
+      "name": "Mascotas",
+      "item": [
+        {
+          "name": "Listar mascotas (paginated)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/mascotas", "host": ["{{baseUrl}}"], "path": ["mascotas"] }
+          }
+        },
+        {
+          "name": "Buscar mascotas (q)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/mascotas/search?q=Fido", "host": ["{{baseUrl}}"], "path": ["mascotas","search"], "query": [{ "key": "q", "value": "Fido" }] }
+          }
+        },
+        {
+          "name": "Get mascota by id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/mascotas/1", "host": ["{{baseUrl}}"], "path": ["mascotas","1"] }
+          }
+        },
+        {
+          "name": "Crear mascota",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"propietario\": 1,\n  \"nombre\": \"Fido\",\n  \"raza\": \"Labrador\",\n  \"edad\": \"3 años\"\n}" },
+            "url": { "raw": "{{baseUrl}}/mascotas", "host": ["{{baseUrl}}"], "path": ["mascotas"] }
+          }
+        },
+        {
+          "name": "Actualizar mascota",
+          "request": {
+            "method": "PUT",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"propietario\": 1,\n  \"nombre\": \"Fido II\",\n  \"raza\": \"Labrador\",\n  \"edad\": \"4 años\"\n}" },
+            "url": { "raw": "{{baseUrl}}/mascotas/1", "host": ["{{baseUrl}}"], "path": ["mascotas","1"] }
+          }
+        },
+        {
+          "name": "Eliminar mascota",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/mascotas/1", "host": ["{{baseUrl}}"], "path": ["mascotas","1"] }
+          }
+        },
+        {
+          "name": "Estadísticas mascotas",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/mascotas/stats", "host": ["{{baseUrl}}"], "path": ["mascotas","stats"] }
+          }
+        }
+      ]
+    }
+    ,
     {
-      "name": "Estadísticas propietarios",
-      "request": {
-        "method": "GET",
-        "header": [],
-        "url": { "raw": "{{baseUrl}}/propietarios/stats", "host": ["{{baseUrl}}"], "path": ["propietarios","stats"] }
-      }
+      "name": "HistorialMedico",
+      "item": [
+        {
+          "name": "Listar historiales (paginated)",
+          "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/historiales", "host": ["{{baseUrl}}"], "path": ["historiales"] } }
+        },
+        {
+          "name": "Buscar historiales (q)",
+          "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/historiales/search?q=fiebre", "host": ["{{baseUrl}}"], "path": ["historiales","search"], "query": [{ "key": "q", "value": "fiebre" }] } }
+        },
+        {
+          "name": "Get historial by id",
+          "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/historiales/1", "host": ["{{baseUrl}}"], "path": ["historiales","1"] } }
+        },
+        {
+          "name": "Crear historial",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"mascota\": 1,\n  \"fechaAtencion\": \"2025-11-01T10:00:00Z\",\n  \"motivo\": \"Consulta por vómitos\",\n  \"diagnostico\": \"Probable gastroenteritis\"\n}" },
+            "url": { "raw": "{{baseUrl}}/historiales", "host": ["{{baseUrl}}"], "path": ["historiales"] }
+          }
+        },
+        {
+          "name": "Actualizar historial",
+          "request": {
+            "method": "PUT",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"mascota\": 1,\n  \"fechaAtencion\": \"2025-11-02T11:00:00Z\",\n  \"motivo\": \"Revisión seguimiento\",\n  \"diagnostico\": \"Mejoría\"\n}" },
+            "url": { "raw": "{{baseUrl}}/historiales/1", "host": ["{{baseUrl}}"], "path": ["historiales","1"] }
+          }
+        },
+        {
+          "name": "Eliminar historial",
+          "request": { "method": "DELETE", "header": [], "url": { "raw": "{{baseUrl}}/historiales/1", "host": ["{{baseUrl}}"], "path": ["historiales","1"] } }
+        },
+        {
+          "name": "Estadísticas historiales",
+          "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/historiales/stats", "host": ["{{baseUrl}}"], "path": ["historiales","stats"] } }
+        }
+      ]
     }
   ]
 }
