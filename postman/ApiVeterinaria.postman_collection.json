@@ -1,0 +1,100 @@
+{
+  "info": {
+    "_postman_id": "api-veterinaria-propietarios",
+    "name": "Api Veterinaria - Propietarios",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000/api/v1"
+    }
+  ],
+  "item": [
+    {
+      "name": "Listar propietarios (paginated)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/propietarios",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "propietarios"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Buscar propietarios (q)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/propietarios/search?q=Juan",
+          "host": ["{{baseUrl}}"],
+          "path": ["propietarios","search"],
+          "query": [
+            { "key": "q", "value": "Juan" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Get propietario by id",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/propietarios/1",
+          "host": ["{{baseUrl}}"],
+          "path": ["propietarios","1"]
+        }
+      }
+    },
+    {
+      "name": "Crear propietario",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Carlos\",\n  \"apellidos\": \"Gomez\",\n  \"cedula\": \"12345678\",\n  \"telefono\": \"+541112345678\",\n  \"correo\": \"carlos@example.com\"\n}"
+        },
+        "url": { "raw": "{{baseUrl}}/propietarios", "host": ["{{baseUrl}}"], "path": ["propietarios"] }
+      }
+    },
+    {
+      "name": "Actualizar propietario",
+      "request": {
+        "method": "PUT",
+        "header": [ { "key": "Content-Type", "value": "application/json" } ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Carlos Alberto\",\n  \"apellidos\": \"Gomez\",\n  \"cedula\": \"12345678\",\n  \"telefono\": \"+541112345678\",\n  \"correo\": \"carlos@example.com\"\n}"
+        },
+        "url": { "raw": "{{baseUrl}}/propietarios/1", "host": ["{{baseUrl}}"], "path": ["propietarios","1"] }
+      }
+    },
+    {
+      "name": "Eliminar propietario",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": { "raw": "{{baseUrl}}/propietarios/1", "host": ["{{baseUrl}}"], "path": ["propietarios","1"] }
+      }
+    },
+    {
+      "name": "Estadísticas propietarios",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": { "raw": "{{baseUrl}}/propietarios/stats", "host": ["{{baseUrl}}"], "path": ["propietarios","stats"] }
+      }
+    }
+  ]
+}
