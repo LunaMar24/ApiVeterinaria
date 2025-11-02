@@ -7,6 +7,7 @@ const express = require('express');
 const router = express.Router();
 const UserController = require('../controllers/userController');
 const { validateUser, validateUserId } = require('../middleware/validation');
+const { authenticateToken } = require('../middleware/auth');
 
 /**
  * @route GET /users
@@ -17,7 +18,7 @@ const { validateUser, validateUserId } = require('../middleware/validation');
  * @param {string} [search] - Término de búsqueda por nombre
  * @returns {Object} Lista de usuarios con metadatos de paginación
  */
-router.get('/', UserController.getAllUsers);
+router.get('/', authenticateToken, UserController.getAllUsers);
 
 /**
  * @route GET /users/search
@@ -26,7 +27,7 @@ router.get('/', UserController.getAllUsers);
  * @param {string} q - Término de búsqueda (query parameter)
  * @returns {Object} Lista de usuarios que coinciden con la búsqueda
  */
-router.get('/search', UserController.searchUsers);
+router.get('/search', authenticateToken, UserController.searchUsers);
 
 /**
  * @route GET /users/stats
@@ -34,7 +35,7 @@ router.get('/search', UserController.searchUsers);
  * @access Public
  * @returns {Object} Estadísticas del sistema de usuarios
  */
-router.get('/stats', UserController.getUserStats);
+router.get('/stats', authenticateToken, UserController.getUserStats);
 
 /**
  * @route GET /users/:id
@@ -43,7 +44,7 @@ router.get('/stats', UserController.getUserStats);
  * @param {number} id - ID del usuario
  * @returns {Object} Datos del usuario solicitado
  */
-router.get('/:id', validateUserId, UserController.getUserById);
+router.get('/:id', authenticateToken, validateUserId, UserController.getUserById);
 
 /**
  * @route POST /users
@@ -54,7 +55,7 @@ router.get('/:id', validateUserId, UserController.getUserById);
  * @body {string} telefono - Número de teléfono del usuario (requerido)
  * @returns {Object} Usuario creado
  */
-router.post('/', validateUser, UserController.createUser);
+router.post('/', authenticateToken, validateUser, UserController.createUser);
 
 /**
  * @route PUT /users/:id
@@ -66,7 +67,7 @@ router.post('/', validateUser, UserController.createUser);
  * @body {string} telefono - Número de teléfono del usuario (requerido)
  * @returns {Object} Usuario actualizado
  */
-router.put('/:id', validateUserId, validateUser, UserController.updateUser);
+router.put('/:id', authenticateToken, validateUserId, validateUser, UserController.updateUser);
 
 /**
  * @route DELETE /users/:id
@@ -75,6 +76,6 @@ router.put('/:id', validateUserId, validateUser, UserController.updateUser);
  * @param {number} id - ID del usuario a eliminar
  * @returns {Object} Mensaje de confirmación
  */
-router.delete('/:id', validateUserId, UserController.deleteUser);
+router.delete('/:id', authenticateToken, validateUserId, UserController.deleteUser);
 
 module.exports = router;

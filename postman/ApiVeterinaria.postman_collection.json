@@ -8,6 +8,10 @@
     {
       "key": "baseUrl",
       "value": "http://localhost:3000/api/v1"
+    },
+    {
+      "key": "token",
+      "value": ""
     }
   ],
   "item": [
@@ -18,7 +22,9 @@
           "name": "Listar propietarios (paginated)",
           "request": {
             "method": "GET",
-            "header": [],
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
             "url": {
               "raw": "{{baseUrl}}/propietarios",
               "host": [
@@ -34,7 +40,9 @@
           "name": "Buscar propietarios (q)",
           "request": {
             "method": "GET",
-            "header": [],
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
             "url": {
               "raw": "{{baseUrl}}/propietarios/search?q=Juan",
               "host": ["{{baseUrl}}"],
@@ -49,7 +57,9 @@
           "name": "Get propietario by id",
           "request": {
             "method": "GET",
-            "header": [],
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
             "url": {
               "raw": "{{baseUrl}}/propietarios/1",
               "host": ["{{baseUrl}}"],
@@ -62,7 +72,8 @@
           "request": {
             "method": "POST",
             "header": [
-              { "key": "Content-Type", "value": "application/json" }
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
             ],
             "body": {
               "mode": "raw",
@@ -75,7 +86,7 @@
           "name": "Actualizar propietario",
           "request": {
             "method": "PUT",
-            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "header": [ { "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" } ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"nombre\": \"Carlos Alberto\",\n  \"apellidos\": \"Gomez\",\n  \"cedula\": \"12345678\",\n  \"telefono\": \"+541112345678\",\n  \"correo\": \"carlos@example.com\"\n}"
@@ -87,7 +98,7 @@
           "name": "Eliminar propietario",
           "request": {
             "method": "DELETE",
-            "header": [],
+            "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ],
             "url": { "raw": "{{baseUrl}}/propietarios/1", "host": ["{{baseUrl}}"], "path": ["propietarios","1"] }
           }
         },
@@ -95,7 +106,7 @@
           "name": "Estadísticas propietarios",
           "request": {
             "method": "GET",
-            "header": [],
+            "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ],
             "url": { "raw": "{{baseUrl}}/propietarios/stats", "host": ["{{baseUrl}}"], "path": ["propietarios","stats"] }
           }
         }
@@ -107,60 +118,60 @@
         {
           "name": "Listar mascotas (paginated)",
           "request": {
-            "method": "GET",
-            "header": [],
-            "url": { "raw": "{{baseUrl}}/mascotas", "host": ["{{baseUrl}}"], "path": ["mascotas"] }
-          }
+              "method": "GET",
+              "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ],
+              "url": { "raw": "{{baseUrl}}/mascotas", "host": ["{{baseUrl}}"], "path": ["mascotas"] }
+            }
         },
         {
           "name": "Buscar mascotas (q)",
           "request": {
-            "method": "GET",
-            "header": [],
-            "url": { "raw": "{{baseUrl}}/mascotas/search?q=Fido", "host": ["{{baseUrl}}"], "path": ["mascotas","search"], "query": [{ "key": "q", "value": "Fido" }] }
-          }
+              "method": "GET",
+              "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ],
+              "url": { "raw": "{{baseUrl}}/mascotas/search?q=Fido", "host": ["{{baseUrl}}"], "path": ["mascotas","search"], "query": [{ "key": "q", "value": "Fido" }] }
+            }
         },
         {
           "name": "Get mascota by id",
           "request": {
-            "method": "GET",
-            "header": [],
-            "url": { "raw": "{{baseUrl}}/mascotas/1", "host": ["{{baseUrl}}"], "path": ["mascotas","1"] }
-          }
+              "method": "GET",
+              "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ],
+              "url": { "raw": "{{baseUrl}}/mascotas/1", "host": ["{{baseUrl}}"], "path": ["mascotas","1"] }
+            }
         },
         {
           "name": "Crear mascota",
           "request": {
-            "method": "POST",
-            "header": [ { "key": "Content-Type", "value": "application/json" } ],
-            "body": { "mode": "raw", "raw": "{\n  \"propietario\": 1,\n  \"nombre\": \"Fido\",\n  \"raza\": \"Labrador\",\n  \"edad\": \"3 años\"\n}" },
-            "url": { "raw": "{{baseUrl}}/mascotas", "host": ["{{baseUrl}}"], "path": ["mascotas"] }
-          }
+              "method": "POST",
+              "header": [ { "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" } ],
+              "body": { "mode": "raw", "raw": "{\n  \"propietario\": 1,\n  \"nombre\": \"Fido\",\n  \"raza\": \"Labrador\",\n  \"edad\": \"3 años\"\n}" },
+              "url": { "raw": "{{baseUrl}}/mascotas", "host": ["{{baseUrl}}"], "path": ["mascotas"] }
+            }
         },
         {
           "name": "Actualizar mascota",
           "request": {
-            "method": "PUT",
-            "header": [ { "key": "Content-Type", "value": "application/json" } ],
-            "body": { "mode": "raw", "raw": "{\n  \"propietario\": 1,\n  \"nombre\": \"Fido II\",\n  \"raza\": \"Labrador\",\n  \"edad\": \"4 años\"\n}" },
-            "url": { "raw": "{{baseUrl}}/mascotas/1", "host": ["{{baseUrl}}"], "path": ["mascotas","1"] }
-          }
+              "method": "PUT",
+              "header": [ { "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" } ],
+              "body": { "mode": "raw", "raw": "{\n  \"propietario\": 1,\n  \"nombre\": \"Fido II\",\n  \"raza\": \"Labrador\",\n  \"edad\": \"4 años\"\n}" },
+              "url": { "raw": "{{baseUrl}}/mascotas/1", "host": ["{{baseUrl}}"], "path": ["mascotas","1"] }
+            }
         },
         {
           "name": "Eliminar mascota",
           "request": {
-            "method": "DELETE",
-            "header": [],
-            "url": { "raw": "{{baseUrl}}/mascotas/1", "host": ["{{baseUrl}}"], "path": ["mascotas","1"] }
-          }
+              "method": "DELETE",
+              "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ],
+              "url": { "raw": "{{baseUrl}}/mascotas/1", "host": ["{{baseUrl}}"], "path": ["mascotas","1"] }
+            }
         },
         {
           "name": "Estadísticas mascotas",
           "request": {
-            "method": "GET",
-            "header": [],
-            "url": { "raw": "{{baseUrl}}/mascotas/stats", "host": ["{{baseUrl}}"], "path": ["mascotas","stats"] }
-          }
+              "method": "GET",
+              "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ],
+              "url": { "raw": "{{baseUrl}}/mascotas/stats", "host": ["{{baseUrl}}"], "path": ["mascotas","stats"] }
+            }
         }
       ]
     }
@@ -170,21 +181,21 @@
       "item": [
         {
           "name": "Listar historiales (paginated)",
-          "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/historiales", "host": ["{{baseUrl}}"], "path": ["historiales"] } }
+    "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ], "url": { "raw": "{{baseUrl}}/historiales", "host": ["{{baseUrl}}"], "path": ["historiales"] } }
         },
         {
           "name": "Buscar historiales (q)",
-          "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/historiales/search?q=fiebre", "host": ["{{baseUrl}}"], "path": ["historiales","search"], "query": [{ "key": "q", "value": "fiebre" }] } }
+    "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ], "url": { "raw": "{{baseUrl}}/historiales/search?q=fiebre", "host": ["{{baseUrl}}"], "path": ["historiales","search"], "query": [{ "key": "q", "value": "fiebre" }] } }
         },
         {
           "name": "Get historial by id",
-          "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/historiales/1", "host": ["{{baseUrl}}"], "path": ["historiales","1"] } }
+    "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ], "url": { "raw": "{{baseUrl}}/historiales/1", "host": ["{{baseUrl}}"], "path": ["historiales","1"] } }
         },
         {
           "name": "Crear historial",
           "request": {
             "method": "POST",
-            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "header": [ { "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" } ],
             "body": { "mode": "raw", "raw": "{\n  \"mascota\": 1,\n  \"fechaAtencion\": \"2025-11-01T10:00:00Z\",\n  \"motivo\": \"Consulta por vómitos\",\n  \"diagnostico\": \"Probable gastroenteritis\"\n}" },
             "url": { "raw": "{{baseUrl}}/historiales", "host": ["{{baseUrl}}"], "path": ["historiales"] }
           }
@@ -193,18 +204,71 @@
           "name": "Actualizar historial",
           "request": {
             "method": "PUT",
-            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "header": [ { "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" } ],
             "body": { "mode": "raw", "raw": "{\n  \"mascota\": 1,\n  \"fechaAtencion\": \"2025-11-02T11:00:00Z\",\n  \"motivo\": \"Revisión seguimiento\",\n  \"diagnostico\": \"Mejoría\"\n}" },
             "url": { "raw": "{{baseUrl}}/historiales/1", "host": ["{{baseUrl}}"], "path": ["historiales","1"] }
           }
         },
         {
           "name": "Eliminar historial",
-          "request": { "method": "DELETE", "header": [], "url": { "raw": "{{baseUrl}}/historiales/1", "host": ["{{baseUrl}}"], "path": ["historiales","1"] } }
+    "request": { "method": "DELETE", "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ], "url": { "raw": "{{baseUrl}}/historiales/1", "host": ["{{baseUrl}}"], "path": ["historiales","1"] } }
         },
         {
           "name": "Estadísticas historiales",
-          "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/historiales/stats", "host": ["{{baseUrl}}"], "path": ["historiales","stats"] } }
+    "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ], "url": { "raw": "{{baseUrl}}/historiales/stats", "host": ["{{baseUrl}}"], "path": ["historiales","stats"] } }
+        }
+      ]
+    },
+    {
+      "name": "Autenticacion",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Juan Perez\",\n  \"email\": \"juan@example.com\",\n  \"telefono\": \"+541112345678\",\n  \"password\": \"P@ssw0rd!\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/auth/register", "host": ["{{baseUrl}}"], "path": ["auth","register"] }
+          }
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"juan@example.com\",\n  \"password\": \"P@ssw0rd!\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth","login"] }
+          }
+        },
+        {
+          "name": "Refresh token",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": { "raw": "{{baseUrl}}/auth/refresh", "host": ["{{baseUrl}}"], "path": ["auth","refresh"] }
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": { "raw": "{{baseUrl}}/auth/logout", "host": ["{{baseUrl}}"], "path": ["auth","logout"] }
+          }
         }
       ]
     }

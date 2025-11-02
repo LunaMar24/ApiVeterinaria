@@ -7,54 +7,55 @@ const express = require('express');
 const router = express.Router();
 const PropietarioController = require('../controllers/propietarioController');
 const { validatePropietario, validatePropietarioId } = require('../middleware/validation');
+const { authenticateToken } = require('../middleware/auth');
 
 /**
  * @route GET /propietarios
  * @description Obtiene todos los propietarios con paginación opcional
  * @access Public
  */
-router.get('/', PropietarioController.getAllPropietarios);
+router.get('/', authenticateToken, PropietarioController.getAllPropietarios);
 
 /**
  * @route GET /propietarios/search
  * @description Busca propietarios por nombre o apellidos
  * @access Public
  */
-router.get('/search', PropietarioController.searchPropietarios);
+router.get('/search', authenticateToken, PropietarioController.searchPropietarios);
 
 /**
  * @route GET /propietarios/stats
  * @description Obtiene estadísticas de propietarios
  * @access Public
  */
-router.get('/stats', PropietarioController.getPropietarioStats);
+router.get('/stats', authenticateToken, PropietarioController.getPropietarioStats);
 
 /**
  * @route GET /propietarios/:id
  * @description Obtiene un propietario específico por ID
  * @access Public
  */
-router.get('/:id', validatePropietarioId, PropietarioController.getPropietarioById);
+router.get('/:id', authenticateToken, validatePropietarioId, PropietarioController.getPropietarioById);
 
 /**
  * @route POST /propietarios
  * @description Crea un nuevo propietario
  * @access Public
  */
-router.post('/', validatePropietario, PropietarioController.createPropietario);
+router.post('/', authenticateToken, validatePropietario, PropietarioController.createPropietario);
 
 /**
  * @route PUT /propietarios/:id
  * @description Actualiza un propietario existente
  * @access Public
  */
-router.put('/:id', validatePropietarioId, validatePropietario, PropietarioController.updatePropietario);
+router.put('/:id', authenticateToken, validatePropietarioId, validatePropietario, PropietarioController.updatePropietario);
 
 /**
  * @route DELETE /propietarios/:id
  * @description Elimina un propietario
  * @access Public
  */
-router.delete('/:id', validatePropietarioId, PropietarioController.deletePropietario);
+router.delete('/:id', authenticateToken, validatePropietarioId, PropietarioController.deletePropietario);
 
 module.exports = router;
