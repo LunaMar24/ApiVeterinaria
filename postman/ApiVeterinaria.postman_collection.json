@@ -370,6 +370,104 @@
       ]
     },
     {
+      "name": "Usuarios",
+      "item": [
+        {
+          "name": "Listar usuarios (paginated)",
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ],
+            "url": { "raw": "{{baseUrl}}/users", "host": ["{{baseUrl}}"], "path": ["users"] }
+          }
+        },
+        {
+          "name": "Buscar usuarios (search param)",
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ],
+            "url": { "raw": "{{baseUrl}}/users?search=Juan", "host": ["{{baseUrl}}"], "path": ["users"], "query": [{ "key": "search", "value": "Juan" }] }
+          }
+        },
+        {
+          "name": "Buscar usuarios (q)",
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ],
+            "url": { "raw": "{{baseUrl}}/users/search?q=Juan", "host": ["{{baseUrl}}"], "path": ["users","search"], "query": [{ "key": "q", "value": "Juan" }] }
+          }
+        },
+        {
+          "name": "Buscar usuarios por términos (POST)",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"search\": \"Juan\"\n}" },
+            "url": { "raw": "{{baseUrl}}/users/search", "host": ["{{baseUrl}}"], "path": ["users","search"] }
+          }
+        },
+        {
+          "name": "Buscar usuarios por campos (POST)",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"id\": 1,\n  \"nombre\": \"Juan\",\n  \"email\": \"juan@\",\n  \"telefono\": \"+54\"\n}" },
+            "url": { "raw": "{{baseUrl}}/users/search", "host": ["{{baseUrl}}"], "path": ["users","search"] }
+          }
+        },
+        {
+          "name": "Buscar usuarios por rango de fecha (POST)",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"fechaDesde\": \"2025-11-01T00:00:00Z\",\n  \"fechaHasta\": \"2025-11-02T23:59:59Z\"\n}" },
+            "url": { "raw": "{{baseUrl}}/users/search", "host": ["{{baseUrl}}"], "path": ["users","search"] }
+          }
+        },
+        {
+          "name": "Get user by id",
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ],
+            "url": { "raw": "{{baseUrl}}/users/1", "host": ["{{baseUrl}}"], "path": ["users","1"] }
+          }
+        },
+        {
+          "name": "Crear usuario",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"nombre\": \"Juan Pérez\",\n  \"email\": \"juan@example.com\",\n  \"telefono\": \"+541112345678\",\n  \"password\": \"P@ssw0rd!\"\n}" },
+            "url": { "raw": "{{baseUrl}}/users", "host": ["{{baseUrl}}"], "path": ["users"] }
+          }
+        },
+        {
+          "name": "Actualizar usuario",
+          "request": {
+            "method": "PUT",
+            "header": [ { "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"nombre\": \"Juan Pérez\",\n  \"email\": \"juan@example.com\",\n  \"telefono\": \"+541112345679\"\n}" },
+            "url": { "raw": "{{baseUrl}}/users/1", "host": ["{{baseUrl}}"], "path": ["users","1"] }
+          }
+        },
+        {
+          "name": "Eliminar usuario",
+          "request": {
+            "method": "DELETE",
+            "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ],
+            "url": { "raw": "{{baseUrl}}/users/1", "host": ["{{baseUrl}}"], "path": ["users","1"] }
+          }
+        },
+        {
+          "name": "Estadísticas usuarios",
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ],
+            "url": { "raw": "{{baseUrl}}/users/stats", "host": ["{{baseUrl}}"], "path": ["users","stats"] }
+          }
+        }
+      ]
+    },
+    {
       "name": "Autenticacion",
       "item": [
         {

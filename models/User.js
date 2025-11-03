@@ -10,6 +10,25 @@ const { pool } = require('../config/database');
  */
 class User {
     /**
+     * Convierte una fecha (Date o string ISO) a formato MySQL DATETIME: 'YYYY-MM-DD HH:MM:SS'
+     * @param {string|Date} dateInput
+     * @returns {string}
+     */
+    static _formatDateForMySQL(dateInput) {
+        const d = dateInput instanceof Date ? dateInput : new Date(dateInput);
+        if (Number.isNaN(d.getTime())) {
+            throw new Error('Fecha inválida');
+        }
+        const pad = (n) => String(n).padStart(2, '0');
+        const year = d.getFullYear();
+        const month = pad(d.getMonth() + 1);
+        const day = pad(d.getDate());
+        const hours = pad(d.getHours());
+        const minutes = pad(d.getMinutes());
+        const seconds = pad(d.getSeconds());
+        return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    }
+    /**
      * Constructor para crear una instancia de Usuario
      * @param {Object} userData - Datos del usuario
      * @param {number} userData.id - ID del usuario
@@ -201,14 +220,88 @@ class User {
      */
     static async searchByName(nombre) {
         try {
+            // Búsqueda general SOLO por nombre (parcial)
+            const term = nombre?.toString().trim() || '';
+            const like = `%${term}%`;
             const [rows] = await pool.execute(
                 'SELECT id, nombre, email, telefono, fecha_creacion, fecha_actualizacion FROM usuarios WHERE nombre LIKE ? ORDER BY nombre',
-                [`%${nombre}%`]
+                [like]
             );
             return rows;
         } catch (error) {
             console.error('Error en User.searchByName:', error);
             throw new Error('Error al buscar usuarios por nombre');
+        }
+    }
+
+    /**
+     * Busca usuarios por múltiples campos dinámicamente
+     * @param {Object} searchFields - Campos a filtrar: { id, nombre, email, telefono }
+     * @returns {Promise<Array>} Resultados que cumplen TODOS los filtros (AND)
+     */
+    static async searchByFields(searchFields) {
+        try {
+            const validFields = ['id', 'nombre', 'email', 'telefono', 'fecha_creacion', 'fechaDesde', 'fechaHasta'];
+            const textFields = ['nombre', 'email', 'telefono'];
+            const exactFields = ['fecha_creacion'];
+
+            const conditions = [];
+            const params = [];
+
+            // Manejo especial de rango de fechas (fecha_creacion)
+            const hasDesde = searchFields && searchFields.fechaDesde !== undefined && searchFields.fechaDesde !== null && String(searchFields.fechaDesde).trim() !== '';
+            const hasHasta = searchFields && searchFields.fechaHasta !== undefined && searchFields.fechaHasta !== null && String(searchFields.fechaHasta).trim() !== '';
+            if (hasDesde || hasHasta) {
+                try {
+                    if (hasDesde) {
+                        const from = User._formatDateForMySQL(searchFields.fechaDesde);
+                        conditions.push('fecha_creacion >= ?');
+                        params.push(from);
+                    }
+                    if (hasHasta) {
+                        const to = User._formatDateForMySQL(searchFields.fechaHasta);
+                        conditions.push('fecha_creacion <= ?');
+                        params.push(to);
+                    }
+                } catch (e) {
+                    console.error('Error formateando rango de fechas (usuarios):', e);
+                    throw new Error('Rango de fechas inválido');
+                }
+            }
+
+            for (const [field, raw] of Object.entries(searchFields || {})) {
+                if (!validFields.includes(field)) continue;
+                if (raw === undefined || raw === null) continue;
+                const value = raw.toString().trim();
+                if (!value) continue;
+
+                if (field === 'id') {
+                    conditions.push('id = ?');
+                    params.push(parseInt(value));
+                } else if (textFields.includes(field)) {
+                    conditions.push(`${field} LIKE ?`);
+                    params.push(`%${value}%`);
+                } else if (exactFields.includes(field)) {
+                    // Permitir comodín manual con sufijo % para LIKE
+                    if (value.endsWith('%')) {
+                        conditions.push(`${field} LIKE ?`);
+                        params.push(value);
+                    } else {
+                        conditions.push(`${field} = ?`);
+                        params.push(value);
+                    }
+                }
+            }
+
+            if (conditions.length === 0) return [];
+
+            const where = conditions.join(' AND ');
+            const sql = `SELECT id, nombre, email, telefono, fecha_creacion, fecha_actualizacion FROM usuarios WHERE ${where} ORDER BY nombre`;
+            const [rows] = await pool.execute(sql, params);
+            return rows;
+        } catch (error) {
+            console.error('Error en User.searchByFields:', error);
+            throw new Error('Error al buscar usuarios por campos específicos');
         }
     }
 
@@ -234,16 +327,14 @@ class User {
      */
     static async paginate(page = 1, limit = 10) {
         try {
-            // Asegurar que page y limit sean números enteros
-            const pageInt = parseInt(page) || 1;
-            const limitInt = parseInt(limit) || 10;
-            const offset = (pageInt - 1) * limitInt;
-            
-            // Validar parámetros
+            // Asegurar que page y limit sean números enteros válidos
+            let pageInt = parseInt(page) || 1;
+            let limitInt = parseInt(limit) || 10;
             if (pageInt < 1) pageInt = 1;
             if (limitInt < 1) limitInt = 10;
             if (limitInt > 100) limitInt = 100; // Límite máximo
-            
+            const offset = (pageInt - 1) * limitInt;
+
             // Obtener usuarios paginados usando interpolación directa
             const [users] = await pool.execute(
                 `SELECT id, nombre, email, telefono, fecha_creacion, fecha_actualizacion FROM usuarios ORDER BY fecha_creacion DESC LIMIT ${limitInt} OFFSET ${offset}`

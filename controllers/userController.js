@@ -18,23 +18,49 @@ class UserController {
      */
     static async getAllUsers(req, res) {
         try {
-            // Soportar page/limit en query string o en body; valores por defecto: page=1, limit=10
+            // page/limit desde query o body con validación explícita y defaults
             const rawPage = req.query?.page ?? req.body?.page;
             const rawLimit = req.query?.limit ?? req.body?.limit;
 
             let page = 0;
             let limit = 0;
-            
-            if (isNaN(rawPage) || page < 1) page = 1;
-            if (isNaN(rawPage) || limit < 1) limit = 10;
+
+            // Si no es número o es < 1, asignar default
+            if (isNaN(rawPage) || parseInt(rawPage) < 1) {
+                page = 1;
+            } else {
+                page = parseInt(rawPage);
+            }
+
+            if (isNaN(rawLimit) || parseInt(rawLimit) < 1) {
+                limit = 10;
+            } else {
+                limit = parseInt(rawLimit);
+            }
+            // Límite máximo
             if (limit > 100) limit = 100;
+
             const search = req.query?.search ?? req.body?.search;
+
+            // Búsqueda avanzada por campos (solo para POST con JSON)
+            const validFields = ['id', 'nombre', 'email', 'telefono', 'fecha_creacion', 'fechaDesde', 'fechaHasta'];
+            const searchFields = {};
+            if (req.method === 'POST' && req.body) {
+                validFields.forEach(field => {
+                    if (req.body[field] !== undefined && req.body[field] !== null) {
+                        const v = req.body[field].toString().trim();
+                        if (v) searchFields[field] = v;
+                    }
+                });
+            }
 
             let result;
 
-            if (search) {
-                // Si hay parámetro de búsqueda, buscar por nombre
-                const users = await User.searchByName(search);
+            const hasSpecificFields = Object.keys(searchFields).length > 0;
+            const hasGeneralSearch = !!(search && search.toString().trim());
+
+            if (hasSpecificFields) {
+                const users = await User.searchByFields(searchFields);
                 result = {
                     users,
                     pagination: {
@@ -42,7 +68,21 @@ class UserController {
                         totalPages: 1,
                         totalUsers: users.length,
                         hasNextPage: false,
-                        hasPrevPage: false
+                        hasPrevPage: false,
+                        searchType: 'fields'
+                    }
+                };
+            } else if (hasGeneralSearch) {
+                const users = await User.searchByName(search.toString().trim());
+                result = {
+                    users,
+                    pagination: {
+                        currentPage: 1,
+                        totalPages: 1,
+                        totalUsers: users.length,
+                        hasNextPage: false,
+                        hasPrevPage: false,
+                        searchType: 'general'
                     }
                 };
             } else {

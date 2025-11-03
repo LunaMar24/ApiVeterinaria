@@ -30,6 +30,13 @@ router.get('/', authenticateToken, UserController.getAllUsers);
 router.get('/search', authenticateToken, UserController.searchUsers);
 
 /**
+ * @route POST /users/search
+ * @description Búsqueda avanzada por campos (AND) o por término en body.search
+ * @access Private
+ */
+router.post('/search', authenticateToken, UserController.getAllUsers);
+
+/**
  * @route GET /users/stats
  * @description Obtiene estadísticas de usuarios
  * @access Public
