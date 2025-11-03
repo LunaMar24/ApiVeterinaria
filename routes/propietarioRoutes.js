@@ -24,6 +24,17 @@ router.get('/', authenticateToken, PropietarioController.getAllPropietarios);
 router.get('/search', authenticateToken, PropietarioController.searchPropietarios);
 
 /**
+ * @route POST /propietarios/search
+ * @description Búsqueda avanzada por campos en el cuerpo (JSON)
+ *              Si el body incluye campos específicos (nombre, apellidos, cedula, telefono, correo)
+ *              se usa búsqueda por campos (AND; parciales para texto y exactas para no texto).
+ *              Si solo incluye { search: "valor" } realiza búsqueda general por nombre/apellidos.
+ *              Si no incluye nada, actúa como paginación usando valores por defecto.
+ * @access Public
+ */
+router.post('/search', authenticateToken, PropietarioController.getAllPropietarios);
+
+/**
  * @route GET /propietarios/stats
  * @description Obtiene estadísticas de propietarios
  * @access Public

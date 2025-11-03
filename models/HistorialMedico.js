@@ -44,7 +44,7 @@ class HistorialMedico {
     static async findAll() {
         try {
             const [rows] = await pool.execute(
-                'SELECT idHistorial as id, Mascota as mascota, FechaAtencion as fechaAtencion, Motivo as motivo, Diagnostico as diagnostico FROM historial_medico ORDER BY FechaAtencion DESC'
+                'SELECT idHistorial as id, Mascota as mascota, FechaAtencion as fechaAtencion, Motivo as motivo, Diagnostico as diagnostico FROM vhistorial_medico ORDER BY FechaAtencion DESC'
             );
             return rows;
         } catch (error) {
@@ -56,7 +56,7 @@ class HistorialMedico {
     static async findById(id) {
         try {
             const [rows] = await pool.execute(
-                'SELECT idHistorial as id, Mascota as mascota, FechaAtencion as fechaAtencion, Motivo as motivo, Diagnostico as diagnostico FROM historial_medico WHERE idHistorial = ?',
+                'SELECT idHistorial as id, Mascota as mascota, FechaAtencion as fechaAtencion, Motivo as motivo, Diagnostico as diagnostico FROM vhistorial_medico WHERE idHistorial = ?',
                 [id]
             );
             return rows.length > 0 ? rows[0] : null;
@@ -118,13 +118,99 @@ class HistorialMedico {
     static async searchByTerm(term) {
         try {
             const [rows] = await pool.execute(
-                'SELECT idHistorial as id, Mascota as mascota, FechaAtencion as fechaAtencion, Motivo as motivo, Diagnostico as diagnostico FROM historial_medico WHERE Motivo LIKE ? OR Diagnostico LIKE ? ORDER BY FechaAtencion DESC',
+                'SELECT idHistorial as id, Mascota as mascota, FechaAtencion as fechaAtencion, Motivo as motivo, Diagnostico as diagnostico FROM vhistorial_medico WHERE Motivo LIKE ? OR Diagnostico LIKE ? ORDER BY FechaAtencion DESC',
                 [`%${term}%`, `%${term}%`]
             );
             return rows;
         } catch (error) {
             console.error('Error en HistorialMedico.searchByTerm:', error);
             throw new Error('Error al buscar historiales');
+        }
+    }
+
+    /**
+     * Búsqueda avanzada por múltiples campos (AND)
+     * - Texto (LIKE): motivo, diagnostico
+     * - Exacto (=): mascota, fechaAtencion (formato 'YYYY-MM-DD HH:MM:SS' o prefijo permitido usando LIKE si termina con %)
+     * @param {Object} searchFields
+     * @returns {Promise<Array>}
+     */
+    static async searchByFields(searchFields) {
+        try {
+            const validFields = ['mascota', 'fechaAtencion', 'motivo', 'diagnostico', 'fechaDesde', 'fechaHasta'];
+            const fieldMappings = {
+                mascota: 'Mascota',
+                fechaAtencion: 'FechaAtencion',
+                motivo: 'Motivo',
+                diagnostico: 'Diagnostico'
+            };
+
+            const textFields = ['motivo', 'diagnostico'];
+            const exactFields = ['mascota', 'fechaAtencion'];
+
+            const conditions = [];
+            const params = [];
+
+            // Manejo especial de rango de fechas antes de recorrer campos regulares
+            const hasDesde = searchFields && searchFields.fechaDesde !== undefined && searchFields.fechaDesde !== null && String(searchFields.fechaDesde).trim() !== '';
+            const hasHasta = searchFields && searchFields.fechaHasta !== undefined && searchFields.fechaHasta !== null && String(searchFields.fechaHasta).trim() !== '';
+            if (hasDesde || hasHasta) {
+                try {
+                    if (hasDesde) {
+                        const from = HistorialMedico._formatDateForMySQL(searchFields.fechaDesde);
+                        conditions.push('FechaAtencion >= ?');
+                        params.push(from);
+                    }
+                    if (hasHasta) {
+                        const to = HistorialMedico._formatDateForMySQL(searchFields.fechaHasta);
+                        conditions.push('FechaAtencion <= ?');
+                        params.push(to);
+                    }
+                } catch (e) {
+                    console.error('Error formateando rango de fechas:', e);
+                    throw new Error('Rango de fechas inválido');
+                }
+            }
+
+            for (const [field, value] of Object.entries(searchFields || {})) {
+                if (!validFields.includes(field)) continue;
+                if (value === undefined || value === null) continue;
+                const str = value.toString().trim();
+                if (!str) continue;
+
+                const dbField = fieldMappings[field];
+                if (textFields.includes(field)) {
+                    conditions.push(`${dbField} LIKE ?`);
+                    params.push(`%${str}%`);
+                } else if (exactFields.includes(field)) {
+                    // Si el usuario pasa comodín manual (termina con %), permitir LIKE
+                    if (str.endsWith('%')) {
+                        conditions.push(`${dbField} LIKE ?`);
+                        params.push(str);
+                    } else {
+                        conditions.push(`${dbField} = ?`);
+                        params.push(str);
+                    }
+                } else if (field === 'fechaDesde' || field === 'fechaHasta') {
+                    // Ya manejado arriba; ignorar aquí
+                    continue;
+                }
+            }
+
+            if (conditions.length === 0) return [];
+
+            const whereClause = conditions.join(' AND ');
+            const query = `
+                SELECT idHistorial as id, Mascota as mascota, FechaAtencion as fechaAtencion, Motivo as motivo, Diagnostico as diagnostico
+                FROM vhistorial_medico
+                WHERE ${whereClause}
+                ORDER BY FechaAtencion DESC
+            `;
+            const [rows] = await pool.execute(query, params);
+            return rows;
+        } catch (error) {
+            console.error('Error en HistorialMedico.searchByFields:', error);
+            throw new Error('Error al buscar historiales por campos');
         }
     }
 
@@ -149,7 +235,7 @@ class HistorialMedico {
             const offset = (pageInt - 1) * limitInt;
 
             const [rows] = await pool.execute(
-                `SELECT idHistorial as id, Mascota as mascota, FechaAtencion as fechaAtencion, Motivo as motivo, Diagnostico as diagnostico FROM historial_medico ORDER BY FechaAtencion DESC LIMIT ${limitInt} OFFSET ${offset}`
+                `SELECT idHistorial as id, Mascota as mascota, FechaAtencion as fechaAtencion, Motivo as motivo, Diagnostico as diagnostico FROM vhistorial_medico ORDER BY FechaAtencion DESC LIMIT ${limitInt} OFFSET ${offset}`
             );
 
             const total = await this.count();

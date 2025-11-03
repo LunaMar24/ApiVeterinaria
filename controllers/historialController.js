@@ -9,6 +9,7 @@ const { validationResult } = require('express-validator');
 class HistorialController {
     static async getAllHistoriales(req, res) {
         try {
+            // Paginación unificada
             const rawPage = req.query?.page ?? req.body?.page;
             const rawLimit = req.query?.limit ?? req.body?.limit;
 
@@ -18,12 +19,51 @@ class HistorialController {
             if (limit < 1) limit = 10;
             if (limit > 100) limit = 100;
 
-            const search = req.query?.q ?? req.body?.q;
+            // Aceptar 'search' o 'q' tanto en query como en body
+            const search = req.query?.search ?? req.body?.search ?? req.query?.q ?? req.body?.q;
+
+            // Búsqueda avanzada por campos (solo POST con JSON)
+            const validFields = ['mascota', 'fechaAtencion', 'motivo', 'diagnostico', 'fechaDesde', 'fechaHasta'];
+            const searchFields = {};
+            if (req.method === 'POST' && req.body) {
+                validFields.forEach(field => {
+                    if (req.body[field] !== undefined && req.body[field] !== null) {
+                        const v = req.body[field].toString().trim();
+                        if (v) searchFields[field] = v;
+                    }
+                });
+            }
 
             let result;
-            if (search) {
-                const historiales = await Historial.searchByTerm(search);
-                result = { historiales, pagination: { currentPage: 1, totalPages: 1, totalHistoriales: historiales.length, hasNextPage: false, hasPrevPage: false } };
+            const hasSpecificFields = Object.keys(searchFields).length > 0;
+            const hasGeneralSearch = !!(search && search.toString().trim());
+
+            if (hasSpecificFields) {
+                const historiales = await Historial.searchByFields(searchFields);
+                result = {
+                    historiales,
+                    pagination: {
+                        currentPage: 1,
+                        totalPages: 1,
+                        totalHistoriales: historiales.length,
+                        hasNextPage: false,
+                        hasPrevPage: false,
+                        searchType: 'fields'
+                    }
+                };
+            } else if (hasGeneralSearch) {
+                const historiales = await Historial.searchByTerm(search.toString().trim());
+                result = {
+                    historiales,
+                    pagination: {
+                        currentPage: 1,
+                        totalPages: 1,
+                        totalHistoriales: historiales.length,
+                        hasNextPage: false,
+                        hasPrevPage: false,
+                        searchType: 'general'
+                    }
+                };
             } else {
                 result = await Historial.paginate(page, limit);
             }

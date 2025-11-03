@@ -164,6 +164,67 @@ class Propietario {
     }
 
     /**
+     * Busca propietarios por múltiples campos dinámicamente
+     * @param {Object} searchFields - Objeto con los campos a buscar
+     * @returns {Promise<Array>} Array de propietarios encontrados
+     */
+    static async searchByFields(searchFields) {
+        try {
+            const validFields = ['nombre', 'apellidos', 'cedula', 'telefono', 'correo'];
+            const fieldMappings = {
+                'nombre': 'Nombre',
+                'apellidos': 'Apellidos', 
+                'cedula': 'Cedula',
+                'telefono': 'Telefono',
+                'correo': 'Correo'
+            };
+
+            // Campos de texto (búsqueda parcial) vs campos exactos
+            const textFields = ['nombre', 'apellidos', 'correo', 'cedula', 'telefono'];
+            const exactFields = [];
+
+            const conditions = [];
+            const params = [];
+
+            for (const [field, value] of Object.entries(searchFields)) {
+                if (validFields.includes(field) && value && value.toString().trim()) {
+                    const dbField = fieldMappings[field];
+                    const cleanValue = value.toString().trim();
+
+                    if (textFields.includes(field)) {
+                        // Búsqueda parcial para campos de texto
+                        conditions.push(`${dbField} LIKE ?`);
+                        params.push(`%${cleanValue}%`);
+                    } else if (exactFields.includes(field)) {
+                        // Búsqueda exacta para cédula y teléfono
+                        conditions.push(`${dbField} = ?`);
+                        params.push(cleanValue);
+                    }
+                }
+            }
+
+            if (conditions.length === 0) {
+                return [];
+            }
+
+            const whereClause = conditions.join(' AND ');
+            const query = `
+                SELECT idPropietario as id, Nombre as nombre, Apellidos as apellidos, 
+                       Cedula as cedula, Telefono as telefono, Correo as correo 
+                FROM propietario 
+                WHERE ${whereClause} 
+                ORDER BY Nombre, Apellidos
+            `;
+
+            const [rows] = await pool.execute(query, params);
+            return rows;
+        } catch (error) {
+            console.error('Error en Propietario.searchByFields:', error);
+            throw new Error('Error al buscar propietarios por campos específicos');
+        }
+    }
+
+    /**
      * Cuenta el total de propietarios
      * @returns {Promise<number>} Número total de propietarios
      */

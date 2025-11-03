@@ -24,6 +24,34 @@ router.get('/', authenticateToken, MascotaController.getAllMascotas);
 router.get('/search', authenticateToken, MascotaController.searchMascotas);
 
 /**
+ * @route POST /mascotas/search
+ * @description Búsqueda avanzada por campos vía body JSON
+ * @access Public
+ */
+router.post('/search', authenticateToken, MascotaController.getAllMascotas);
+
+/**
+ * @route GET /mascotas/propietarios
+ * @description Lista propietarios de mascotas desde la vista vproietariosmascota (paginado)
+ * @access Public
+ */
+router.get('/propietarios', authenticateToken, MascotaController.getPropietariosMascota);
+
+/**
+ * @route GET /mascotas/propietarios/search
+ * @description Búsqueda general (q) en vproietariosmascota
+ * @access Public
+ */
+router.get('/propietarios/search', authenticateToken, MascotaController.searchPropietariosMascota);
+
+/**
+ * @route POST /mascotas/propietarios/search
+ * @description Búsqueda avanzada por campos (id, propietario) en vproietariosmascota
+ * @access Public
+ */
+router.post('/propietarios/search', authenticateToken, MascotaController.getPropietariosMascota);
+
+/**
  * @route GET /mascotas/stats
  * @description Obtiene estadísticas de mascotas
  * @access Public

@@ -362,7 +362,7 @@ const validatePropietarioId = [
 
 /**
  * Validaciones para datos de mascota
- * Campos: Propietario, Nombre, Raza, Edad
+ * Campos: Propietario, Nombre, Especie, Raza, Edad
  */
 const validateMascota = [
     body('propietario')
@@ -377,6 +377,12 @@ const validateMascota = [
         .withMessage('El nombre de la mascota es requerido')
         .isLength({ min: 1, max: 100 })
         .withMessage('El nombre debe tener entre 1 y 100 caracteres'),
+
+    body('especie')
+        .trim()
+        .optional()
+        .isLength({ max: 50 })
+        .withMessage('La especie no puede exceder 50 caracteres'),
 
     body('raza')
         .trim()

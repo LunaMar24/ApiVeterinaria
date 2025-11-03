@@ -9,21 +9,55 @@ const { validationResult } = require('express-validator');
 class PropietarioController {
     static async getAllPropietarios(req, res) {
         try {
-            // Soportar page/limit en query string o en body; valores por defecto: page=1, limit=10
+            // Corregir bugs de parsing
             const rawPage = req.query?.page ?? req.body?.page;
             const rawLimit = req.query?.limit ?? req.body?.limit;
 
-            let page = 0;
-            let limit = 0;
+            let page = parseInt(rawPage) || 1;
+            let limit = parseInt(rawLimit) || 10;
             
-            if (isNaN(rawPage) || page < 1) page = 1;
-            if (isNaN(rawPage) || limit < 1) limit = 10;
+            // Validaciones corregidas
+            if (page < 1) page = 1;
+            if (limit < 1) limit = 10;
             if (limit > 100) limit = 100;
+
             const search = req.query?.search ?? req.body?.search;
+            
+            // Extraer campos específicos de búsqueda del body (solo para POST)
+            const searchFields = {};
+            const validFields = ['nombre', 'apellidos', 'cedula', 'telefono', 'correo'];
+            
+            // Solo revisar el body para campos específicos si es POST
+            if (req.method === 'POST' && req.body) {
+                validFields.forEach(field => {
+                    if (req.body[field] && req.body[field].toString().trim()) {
+                        searchFields[field] = req.body[field].toString().trim();
+                    }
+                });
+            }
 
             let result;
 
-            if (search) {
+            // Lógica de decisión
+            const hasSpecificFields = Object.keys(searchFields).length > 0;
+            const hasGeneralSearch = search && search.toString().trim();
+
+            if (hasSpecificFields) {
+                // Búsqueda por campos específicos (solo POST con JSON)
+                const propietarios = await Propietario.searchByFields(searchFields);
+                result = {
+                    propietarios,
+                    pagination: {
+                        currentPage: 1,
+                        totalPages: 1,
+                        totalPropietarios: propietarios.length,
+                        hasNextPage: false,
+                        hasPrevPage: false,
+                        searchType: 'fields'
+                    }
+                };
+            } else if (hasGeneralSearch) {
+                // Búsqueda general por nombre/apellidos
                 const propietarios = await Propietario.searchByName(search);
                 result = {
                     propietarios,
@@ -32,10 +66,12 @@ class PropietarioController {
                         totalPages: 1,
                         totalPropietarios: propietarios.length,
                         hasNextPage: false,
-                        hasPrevPage: false
+                        hasPrevPage: false,
+                        searchType: 'general'
                     }
                 };
             } else {
+                // Paginación normal
                 result = await Propietario.paginate(page, limit);
             }
 
